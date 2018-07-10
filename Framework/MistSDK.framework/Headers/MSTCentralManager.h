@@ -82,7 +82,20 @@
 //Millibars off / on
 @property (nonatomic) BOOL shouldSendMillibars;
 
+/**
+ *  Get the SDK Bundle version
+ */
++(NSString *)getSDKBundleVersion;
+
+/**
+ *  Get the Mobile SDK version
+ */
++(NSString *)getMobileSDKVersion;
+
 //Initialization
++(instancetype) sharedInstance;
+-(void) setOrgID:(NSString *) orgId AndOrgSecret:(NSString *) orgSecret;
+-(void) removeNotifier;
 
 /**
  *  Initialize the MSTCentralManager with orgID and orgSecret
@@ -213,6 +226,41 @@
 
 -(void)saveClientInformation:(NSMutableDictionary *)clientInformation;
 
+#pragma mark -- DR in Path
+
+// TODO: move to a category once DR is well tested.
+
+/**
+ * Ingest the navigation path so DR can better snap the dot.
+ */
+-(void)setPathToDR:(NSData *)data;
+
+/**
+ * Clear the navigation path so DR can forget about the path
+ */
+-(void)clearPath;
+
+/**
+ * Get the inside dot configuration from DR. DR can either use LE vs. PF dot.
+ * @return true means the DR is using LE. Default is false.
+ */
+-(BOOL)getUseLE;
+
+/**
+ * Set the inside dot configuration from DR. DR can either use LE vs. PF dot.
+ */
+-(void)setUseLE:(BOOL)useLE;
+
+/**
+ * Get the DR offset from DR
+ */
+-(NSNumber *)getDROffset;
+
+/**
+ * Get the DR snapped heading from DR
+ */
+-(NSNumber *)getDRClient;
+
 #pragma mark --  RF recording
 
 -(void)startRFRecording:(NSString *)siteId withFloorName:(NSString *)floorName withSurveyId:(NSString *)surveyId withSurveyName:(NSString *)surveyName;
@@ -303,6 +351,8 @@
 - (void) setUseOffset: (bool) useOffset;
 - (void) setdDead: (bool) dDead;
 
+-(void)setSendDRInternalsAlways:(BOOL)sendDRInternalsAlways;
+- (BOOL) getSendDRInternalsAlways;
 @end
 
 @protocol MSTCentralManagerDelegate <NSObject>
@@ -328,6 +378,8 @@
 - (void) mistManager: (MSTCentralManager *) manager didUpdateHeading: (CLHeading *) headingInformation;
 
 - (void) mistManager: (MSTCentralManager *) manager didUpdateLEHeading: (NSDictionary *) leInfo;
+
+- (void) mistManager: (MSTCentralManager *) manager didUpdateDRHeading: (NSDictionary *) drInfo;
 
 #pragma mark - Raw Beacon RSSIs
 - (void) mistManager:(MSTCentralManager *)manager didUpdateBeaconList: (NSArray *) beaconList at: (NSDate *) dateUpdated;
@@ -371,6 +423,18 @@
  */
 -(void)mistManager: (MSTCentralManager *) manager didUpdateRelativeLocation: (MSTPoint *) relativeLocation inMaps: (NSArray *) maps at: (NSDate *) dateUpdated;
 
+/**
+ *  Called when MistFramework receives a DR location update and has map information.
+ *
+ *  @param manager          Returns the caller
+ *  @param relativeLocation Returns the relative location
+ *  @param maps             Returns the maps
+ *  @param dateUpdated      Returns the timeUpdated
+ */
+-(void)mistManager: (MSTCentralManager *) manager didUpdateDRRelativeLocation: (NSDictionary *) drInfo inMaps: (NSArray *) maps at: (NSDate *) dateUpdated;
+
+-(void)mistManager: (MSTCentralManager *) manager didUpdateDRBackendRelativeLocation: (NSDictionary *) drInfo inMaps: (NSArray *) maps at: (NSDate *) dateUpdated;
+
 //-(void)mistManager: (MSTCentralManager *)manager didUpdateComputedLocation:(MSTPoint *)point inMaps:(NSArray *)maps at:(NSDate *)dateUpdated;
 //
 //-(void)mistManager: (MSTCentralManager *)manager didUpdateAverageLocation:(MSTPoint *)point inMaps:(NSArray *)maps at:(NSDate *)dateUpdated;
@@ -410,9 +474,13 @@
 
 -(void) mistManager: (MSTCentralManager *) manager didRangeBeacons:(NSArray *)beacons inRegion: (CLRegion *) region  at: (NSDate *) dateUpdated;
 
+// Beacon list callbacks
+
+-(void) mistManager: (MSTCentralManager *) manager didUpdateBeaconList:(NSArray *)beaconUuids  at: (NSDate *) dateUpdated;
+
 #pragma mark - virtual beacons
 
--(void)mistManager:(MSTCentralManager *)manager didReceivedVirtualBeacons:(NSArray *)virtualBeacons;
+-(void)mistManager:(MSTCentralManager *)manager didReceivedVirtualBeacons:(NSDictionary *)virtualBeacons;
 
 #pragma mark - client information
 
@@ -475,7 +543,27 @@
  *  @param map         Returns the new map information
  *  @param dateUpdated Returns the date updated.
  */
+- (void) mistManager: (MSTCentralManager *) manager willUpdateMap: (MSTMap *) map at: (NSDate *) dateUpdated;
+
+/**
+ *  Called when a map is being detected and fetched from the backend. This function will not be called when bluetooth is not turned on, hence it is for indoor purposes
+ *
+ *  @param manager     Returns the caller
+ *  @param map         Returns the new map information
+ *  @param dateUpdated Returns the date updated.
+ */
 - (void) mistManager: (MSTCentralManager *) manager didUpdateMap: (MSTMap *) map at: (NSDate *) dateUpdated;
+
+/**
+ *  Called when a map is being detected and fetched from the DR. This function will not be called when bluetooth is not turned on, hence it is for indoor purposes
+ *
+ *  @param manager     Returns the caller
+ *  @param map         Returns the new map information
+ *  @param dateUpdated Returns the date updated.
+ */
+- (void) mistManager: (MSTCentralManager *) manager didUpdateDRMap: (MSTMap *) map at: (NSDate *) dateUpdated;
+
+
 
 /**
  * Provides the maps dictionary key by mapId
@@ -518,6 +606,10 @@
 -(void)mistManager:(MSTCentralManager *)manager requestInTimeInts:(NSArray *)timeInts;
 -(void)mistManager:(MSTCentralManager *)manager requestInTimeIntsHistoric:(NSDictionary *)timeIntsHistoric;
 -(void)mistManager:(MSTCentralManager *)manager overallOutstandingRequestsCount:(long) unansweredRequestsCount;
+
+/**
+ * Returns the number of timeout requests
+ */
 -(void)mistManager:(MSTCentralManager *)manager timedOutRequestsCount: (long) timedOutRequestCount;
 
 #pragma mark location rx / tx 
