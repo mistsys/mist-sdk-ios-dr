@@ -39,5 +39,3 @@ FOUNDATION_EXPORT const unsigned char MistSDKVersionString[];
 
 #import <MistSDK/MSTCentralManager+Analytics.h>
 #import <MistSDK/MSTCentralManager+Test.h>
-
-#import <MistSDK/MSTFileManager.h>

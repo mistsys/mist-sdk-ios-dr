@@ -23,8 +23,6 @@
 
 #import "MSTCentralManagerMapDataSource.h"
 
-#define __deprecated    __attribute__((deprecated))
-
 @protocol MSTCentralManagerDelegate;
 @protocol MSTProximityDelegate;
 
@@ -51,20 +49,22 @@
 @property (nonatomic, weak) id<MSTCentralManagerDelegate> delegate;
 @property (nonatomic, weak) id<MSTProximityDelegate> proximityDelegate;
 @property (nonatomic, weak) id<MSTCentralManagerMapDataSource> mapDataSource;
-//Options
-@property (nonatomic) BOOL isSmoothingEnabled; //Private?
-
-@property (nonatomic) bool isRunning;
-@property (nonatomic) bool shouldShowVerboseLogs;
 
 @property (nonatomic) NSUInteger smoothingNumber;
 
-@property (nonatomic) bool shouldSendLocationResponseAlways;
-@property (nonatomic) BOOL shouldSwitchToOSLocation;
+@property (nonatomic, assign) BOOL isSmoothingEnabled; //Private?
 
-@property (nonatomic) BOOL shouldDoJustMicroLocation;
+@property (nonatomic, assign) BOOL isRunning;
 
-@property (nonatomic) BOOL shouldEnableDebugInfo;
+@property (nonatomic, assign) BOOL shouldShowVerboseLogs;
+
+@property (nonatomic, assign) BOOL shouldSendLocationResponseAlways;
+
+@property (nonatomic, assign) BOOL shouldSwitchToOSLocation;
+
+@property (nonatomic, assign) BOOL shouldEnableDebugInfo;
+
+@property (nonatomic, assign) BOOL shouldFetchApInfo;
 
 /**
  *  Only send device motion if the user opt in, otherwise send NO for isDeviceMoving
@@ -74,13 +74,17 @@
 /**
  *  Set this property to true to send data via UDP, false will use TCP.
  */
-@property (nonatomic) bool shouldUseUDP;
+@property (nonatomic, assign) BOOL shouldUseUDP;
 
-@property (nonatomic) bool shouldUseDeadReckoning;
-@property (nonatomic) BOOL shouldSendLogs; //Flag for checking if the logs should be sent
+@property (nonatomic, assign) BOOL shouldSendLogs; //Flag for checking if the logs should be sent
 
 //Millibars off / on
-@property (nonatomic) BOOL shouldSendMillibars;
+
+@property (nonatomic, assign) BOOL shouldSendMillibars;
+
+// Ranging Virtual Beacon
+
+@property (nonatomic, assign) BOOL shouldRangeVirtualBeacon;
 
 /**
  *  Get the SDK Bundle version
@@ -93,8 +97,9 @@
 +(NSString *)getMobileSDKVersion;
 
 //Initialization
+
 +(instancetype) sharedInstance;
--(void) setOrgID:(NSString *) orgId AndOrgSecret:(NSString *) orgSecret;
+
 -(void) removeNotifier;
 
 /**
@@ -105,41 +110,29 @@
  *
  *  @return id an instance of MSTCentralManager
  */
-- (id) initWithOrgID: (NSString *) orgId AndOrgSecret: (NSString *) orgSecret;
+-(id) initWithOrgID: (NSString *) orgId AndOrgSecret: (NSString *) orgSecret;
 
 /**
  * Turn on or off compass
  * @param compassStatus on / off
  */
-- (void) setCompassStatus: (BOOL) compassStatus;
+-(void) setCompassStatus: (BOOL) compassStatus;
 
 //App Information
 #pragma marker -
 #pragma marker - App information (optional)
 
-- (void) setAppInfoWithName: (NSString *) appName andVersion: (NSString *) appVersion;
+-(void) setAppInfoWithName: (NSString *) appName andVersion: (NSString *) appVersion;
 
 /**
  *  Start the location updates
  */
-- (void) startLocationUpdates;
+-(void) startLocationUpdates;
 
 /**
  *  Stop the location updates
  */
-- (void) stopLocationUpdates;
-
-/**
- * Start Asset Transmission
- */
-
-- (void) startAssetTransmission;
-
-/**
- * Stop Asset Transmission
- */
-
-- (void) stopAssetTransmission;
+-(void) stopLocationUpdates;
 
 //Location Response
 
@@ -148,14 +141,14 @@
  *
  *  @return Returns the current location in CLLocationCoordinate2D (lat,long).
  */
-- (CLLocationCoordinate2D) getCurrentLocation;
+-(CLLocationCoordinate2D) getCurrentLocation;
 
 /**
  *  Get the current location in X, Y relative to top left corner of the floorplan
  *
  *  @return Returns the current location in MSTPoint.
  */
-- (MSTPoint *) getCurrentRelativeLocation;
+-(MSTPoint *) getCurrentRelativeLocation;
 
 //Mapping
 
@@ -164,34 +157,34 @@
  *
  *  @return Returns the map origin in CLLocationCoordinate2D.
  */
-- (CLLocationCoordinate2D) getMapOrigin;
+-(CLLocationCoordinate2D) getMapOrigin;
 
 /**
  *  Get the map ID
  *
  *  @return Returns the map identifier.
  */
-- (NSString *) getMapId;
+-(NSString *) getMapId;
 
 /**
  *  Get the map object.
  *
  *  @return Returns the map object in MSTMap.
  */
-- (MSTMap *) getMapDetails;
+-(MSTMap *) getMapDetails;
 
 /**
  *  Get the map name.
  *
  *  @return Returns the map name.
  */
-- (NSString *) getMapName;
+-(NSString *) getMapName;
 
 /*!
  * Get all the maps on the site
  * @return maps a dictionary of maps keyed by mapId
  */
-- (NSDictionary *)getMaps;
+-(NSDictionary *)getMaps;
 
 //Settings
 
@@ -200,29 +193,23 @@
  *
  *  @return Returns true or false for BLE power.
  */
-- (BOOL) isBluetoothPowerOn;
+-(BOOL) isBluetoothPowerOn;
 
 /**
  *  Check if Location is authorized.
  *
  *  @return Returns true or false for Location authorization.
  */
-- (BOOL) isLocationAuthorized;
+-(BOOL) isLocationAuthorized;
 
 /**
  *  Get the Location authorization status.
  *
  *  @return Returns the location authorization status.
  */
-- (CLAuthorizationStatus) getLocationAuthorizationStatus;
+-(CLAuthorizationStatus) getLocationAuthorizationStatus;
 
-- (void) requestAuthorization: (AuthorizationType) authorizationType;
-
-/**
- * Send the SDK logs to Mist for debugging
- */
-
-- (void) sendLogReport: (NSString *) comments;
+-(void) requestAuthorization: (AuthorizationType) authorizationType;
 
 -(void)saveClientInformation:(NSMutableDictionary *)clientInformation;
 
@@ -267,92 +254,100 @@
 
 -(void)stopRFRecording:(NSString *)siteId withRequestBody:(NSDictionary *)requestBody andRecordingId:(NSString *)recodringId;
 
-//#pragma mark - Error logging
-//- (void) reportLogMessage: (NSString *) errorMessage;
-
-#pragma mark - Background
-
--(void)setMonitoringInBackground:(NSArray *)regions __deprecated;
--(void)setRangingInBackground:(NSArray *)regions __deprecated;
-
 /**
  * Setting that enables or disables SDK usage when app is woken using iBeacon regions
  */
 
-#pragma mark - Wake up app
-- (void) wakeUpAppSetting: (BOOL) shouldWakeUpApp;
-
 /**
  * Setting that enables or disables SDK to work in background mode
- *
  */
-
 #pragma mark - Background app settings
-- (void) backgroundAppSetting: (BOOL) shouldWorkInBackground;
-- (void) setAppState: (UIApplicationState) appState;
-+ (UIApplicationState) getAppState;
-#pragma mark - Wake up / Background app times
-- (void) setSentTimeInBackgroundInMins: (double) sendTimeInBackgroundInMins
+
+-(void)wakeUpAppSetting:(BOOL)shouldWakeUpApp;
+
+-(void)setMonitoringInBackground:(NSArray *)regions __deprecated;
+
+-(void)setRangingInBackground:(NSArray *)regions __deprecated;
+
+-(void)backgroundAppSetting:(BOOL)shouldWorkInBackground __deprecated;
+
+-(void)setAppState: (UIApplicationState) appState;
+
++(UIApplicationState) getAppState;
+
+// App wakeup
+
+-(void) setSentTimeInBackgroundInMins: (double) sendTimeInBackgroundInMins
             restTimeInBackgroundInMins: (double) restTimeInBackgroundInMins;
-- (void) sendWithoutRest;
-#pragma mark - RANGING METHODS
-//Starts the delivery of notifications for beacons in the specified region
-- (void) startRangingBeaconsInRegion: (MSTBeaconRegion *) beaconRegion;
 
-//Stops the delivery of notifications for the specified beacon region
-- (void) stopRangingBeaconsInRegion: (MSTBeaconRegion *) beaconRegion;
+-(void) sendWithoutRest;
 
+#pragma mark - Ranging Virtual Beacons. Enable shouldRangeVirtualBeacon to receive virtual beacon ranging
 
 /**
- * Setting that enables or disables SDK remote logging and also sets the logging level
+ *  Check if Location is authorized.
  *
  */
+// Starts the delivery of notifications for beacons in the specified region
+-(void)startRangingBeaconsInRegion:(MSTBeaconRegion *)beaconRegion;
 
-- (void) setLogLevel: (MSTRemoteLoggingLogLevel) mistRemoteLoggingLogLevel;
+/**
+ *  Check if Location is authorized.
+ *
+ */
+// Stops the delivery of notifications for the specified beacon region
+-(void)stopRangingBeaconsInRegion:(MSTBeaconRegion *)beaconRegion;
+
+/**
+ * Optionally set log level
+ */
+-(void)setLogLevel:(MSTLoggerLogLevel)level;
+
+/*
+ * Method to set the value of the dwell property.
+ * @param enable : BOOL
+ * @param timestamp: NSString
+ */
+-(void)setDwell:(BOOL)enable atTimestamp:(NSString *)timestamp;
 
 #pragma mark -
 
 //UNIMPLEMENTED
-//Clients
-- (NSArray *) getAllClients;
-//Zones
-- (NSArray *) getAllZones;
-//Assets
-- (NSArray *) getAllAssets;
 
-- (void) resumeLocationUpdates;
-- (void) pauseLocationUpdates;
+//Clients
+-(NSArray *) getAllClients;
+//Zones
+-(NSArray *) getAllZones;
+//Assets
+-(NSArray *) getAllAssets;
+
+-(void) resumeLocationUpdates;
+-(void) pauseLocationUpdates;
 
 -(void)alert:(NSDictionary *)msgDict;
 
 #pragma mark - App modified locations
-- (void) sendAppModifiedLocation: (CLLocationCoordinate2D) location;
-- (void) sendAppModifiedLocationX:(double) x y:(double) y;
+
+-(void) sendAppModifiedLocation: (CLLocationCoordinate2D) location;
+
+-(void) sendAppModifiedLocationX:(double) x y:(double) y;
 
 #pragma mark - Convert x,y to lat, long
-- (CLLocationCoordinate2D) getLatitudeLongitudeUsingMapOriginForX: (double) x AndY: (double) y;
 
-#pragma mark - App debugging
-- (void) sendAppLogs: (NSDictionary *) appLog;
+-(CLLocationCoordinate2D) getLatitudeLongitudeUsingMapOriginForX: (double) x AndY: (double) y;
 
 #pragma mark - Lab for Testing
-- (void) startTestsForDurationInMins: (long) mins;
 
-#pragma mark - Send Keep Alives
-- (void) setIfShouldSendKeepAlive: (BOOL) shouldSendKeepAlive;
-- (BOOL) getIfShouldSendKeepAlive;
-
-#pragma mark - Send Alerts
-- (void) setIfShouldSendAlerts: (BOOL) shouldSendAlerts;
-- (BOOL) getIfShouldSendAlerts;
+-(void) startTestsForDurationInMins: (long) mins;
 
 #pragma mark - Compass / Dead reckoning settings
-- (void) setCompassOffset: (int) compassOffset;
-- (void) setUseOffset: (bool) useOffset;
-- (void) setdDead: (bool) dDead;
+
+-(void) setCompassOffset: (int) compassOffset;
+-(void) setUseOffset: (bool) useOffset;
+-(void) setdDead: (bool) dDead;
 
 -(void)setSendDRInternalsAlways:(BOOL)sendDRInternalsAlways;
-- (BOOL) getSendDRInternalsAlways;
+-(BOOL) getSendDRInternalsAlways;
 @end
 
 @protocol MSTCentralManagerDelegate <NSObject>
@@ -375,17 +370,17 @@
 @optional
 
 #pragma mark - Compass Callback
-- (void) mistManager: (MSTCentralManager *) manager didUpdateHeading: (CLHeading *) headingInformation;
+-(void) mistManager: (MSTCentralManager *) manager didUpdateHeading: (CLHeading *) headingInformation;
 
-- (void) mistManager: (MSTCentralManager *) manager didUpdateLEHeading: (NSDictionary *) leInfo;
+-(void) mistManager: (MSTCentralManager *) manager didUpdateLEHeading: (NSDictionary *) leInfo;
 
-- (void) mistManager: (MSTCentralManager *) manager didUpdateDRHeading: (NSDictionary *) drInfo;
+-(void) mistManager: (MSTCentralManager *) manager didUpdateDRHeading: (NSDictionary *) drInfo;
 
 #pragma mark - Raw Beacon RSSIs
-- (void) mistManager:(MSTCentralManager *)manager didUpdateBeaconList: (NSArray *) beaconList at: (NSDate *) dateUpdated;
+-(void) mistManager:(MSTCentralManager *)manager didUpdateBeaconList: (NSArray *) beaconList at: (NSDate *) dateUpdated;
 
 #pragma mark - Raw estimate
-- (void) mistManager:(MSTCentralManager *)manager didUpdateSecondEstimate: (MSTPoint *) estimate inMaps: (NSArray *) maps at: (NSDate *) dateUpdated;
+-(void) mistManager:(MSTCentralManager *)manager didUpdateSecondEstimate: (MSTPoint *) estimate inMaps: (NSArray *) maps at: (NSDate *) dateUpdated;
 
 #pragma mark - Virtual Beacon callbacks
 /**
@@ -394,7 +389,7 @@
  * @param beacons       Returns the list of beacons ranged
  * @param region        Returns the beacon region in which maps were ranged
  */
-- (void) manager: (MSTCentralManager *) manager didRangeBeacons:(NSArray<MSTBeacon *> *)beacons inRegion:(MSTBeaconRegion *)region;
+-(void) manager: (MSTCentralManager *) manager didRangeBeacons:(NSArray<MSTBeacon *> *)beacons inRegion:(MSTBeaconRegion *)region;
 
 #pragma mark - Location Callbacks
 
@@ -427,7 +422,7 @@
  *  Called when MistFramework receives a DR location update and has map information.
  *
  *  @param manager          Returns the caller
- *  @param relativeLocation Returns the relative location
+ *  @param drInfo Returns the relative location
  *  @param maps             Returns the maps
  *  @param dateUpdated      Returns the timeUpdated
  */
@@ -441,10 +436,10 @@
 
 -(void)mistManager: (MSTCentralManager *)manager didUpdatePle:(NSInteger)ple andIntercept:(NSInteger)intercept inMaps:(NSArray *)maps at:(NSDate *)dateUpdated;
 
-- (void) mistManager:(MSTCentralManager *)manager didUpdateAngle: (double) angleOrientation inMaps:(NSArray *)maps at:(NSDate *)dateUpdated;
+-(void) mistManager:(MSTCentralManager *)manager didUpdateAngle: (double) angleOrientation inMaps:(NSArray *)maps at:(NSDate *)dateUpdated;
 
 //Pressure callback
-- (void) mistManager:(MSTCentralManager *)manager didUpdatePressure: (double) pressure at: (NSDate *)dateUpdated;
+-(void) mistManager:(MSTCentralManager *)manager didUpdatePressure: (double) pressure at: (NSDate *)dateUpdated;
 
 //Geolocation Callback
 
@@ -466,7 +461,7 @@
 //Accuracy of the location callback
 //This function is called only when we have a location (relative or geolocation)
 
-- (void) mistManager:(MSTCentralManager *)manager didLocateWithProbability: (double) probability andRadius: (double) radius at: (NSString *) dateUpdated;
+-(void) mistManager:(MSTCentralManager *)manager didLocateWithProbability: (double) probability andRadius: (double) radius at: (NSString *) dateUpdated;
 
 #pragma mark - Beacon Callbacks
 
@@ -474,13 +469,9 @@
 
 -(void) mistManager: (MSTCentralManager *) manager didRangeBeacons:(NSArray *)beacons inRegion: (CLRegion *) region  at: (NSDate *) dateUpdated;
 
-// Beacon list callbacks
-
--(void) mistManager: (MSTCentralManager *) manager didUpdateBeaconList:(NSArray *)beaconUuids  at: (NSDate *) dateUpdated;
-
 #pragma mark - virtual beacons
 
--(void)mistManager:(MSTCentralManager *)manager didReceivedVirtualBeacons:(NSDictionary *)virtualBeacons;
+-(void)mistManager:(MSTCentralManager *)manager didReceivedVirtualBeacons:(NSArray *)virtualBeacons;
 
 #pragma mark - client information
 
@@ -500,7 +491,7 @@
  *  @param dateUpdated Returns the date updated.
  */
 
-- (void) mistManager:(MSTCentralManager *)manager didUpdateAppMessage: (NSString *) message dateUpdated: (NSString *) dateUpdated;
+-(void) mistManager:(MSTCentralManager *)manager didUpdateAppMessage: (NSString *) message dateUpdated: (NSString *) dateUpdated;
 
 #pragma mark - STUBS
 
@@ -525,12 +516,12 @@
 // didConnect
 // This function is a little indicator letting the user knows it's connected
 
-- (void) mistManager:(MSTCentralManager *)manager didConnect: (BOOL) isConnected;
+-(void) mistManager:(MSTCentralManager *)manager didConnect: (BOOL) isConnected;
 
 //Error message callback
 //This function is called to give an insight into any issues that might be occurring
 
-- (void) manager:(MSTCentralManager *)manager didErrorOccurWithType: (ErrorType) errorType andDetails: (NSString *) errorDetails;
+-(void) manager:(MSTCentralManager *)manager didErrorOccurWithType: (ErrorType) errorType andDetails: (NSString *) errorDetails;
 
 #pragma mark - Map Callbacks
 
@@ -543,7 +534,7 @@
  *  @param map         Returns the new map information
  *  @param dateUpdated Returns the date updated.
  */
-- (void) mistManager: (MSTCentralManager *) manager willUpdateMap: (MSTMap *) map at: (NSDate *) dateUpdated;
+-(void) mistManager: (MSTCentralManager *) manager willUpdateMap: (MSTMap *) map at: (NSDate *) dateUpdated;
 
 /**
  *  Called when a map is being detected and fetched from the backend. This function will not be called when bluetooth is not turned on, hence it is for indoor purposes
@@ -552,7 +543,7 @@
  *  @param map         Returns the new map information
  *  @param dateUpdated Returns the date updated.
  */
-- (void) mistManager: (MSTCentralManager *) manager didUpdateMap: (MSTMap *) map at: (NSDate *) dateUpdated;
+-(void) mistManager: (MSTCentralManager *) manager didUpdateMap: (MSTMap *) map at: (NSDate *) dateUpdated;
 
 /**
  *  Called when a map is being detected and fetched from the DR. This function will not be called when bluetooth is not turned on, hence it is for indoor purposes
@@ -561,9 +552,7 @@
  *  @param map         Returns the new map information
  *  @param dateUpdated Returns the date updated.
  */
-- (void) mistManager: (MSTCentralManager *) manager didUpdateDRMap: (MSTMap *) map at: (NSDate *) dateUpdated;
-
-
+-(void) mistManager: (MSTCentralManager *) manager didUpdateDRMap: (MSTMap *) map at: (NSDate *) dateUpdated;
 
 /**
  * Provides the maps dictionary key by mapId
@@ -571,9 +560,9 @@
  *  @param maps        Returns the the maps for all sites.
  *  @param dateUpdated Returns the date updated.
  */
-- (void) mistManager: (MSTCentralManager *) manager didReceivedAllMaps: (NSDictionary *) maps at: (NSDate *) dateUpdated;
+-(void) mistManager: (MSTCentralManager *) manager didReceivedAllMaps: (NSDictionary *) maps at: (NSDate *) dateUpdated;
 
-- (void) mistManager:(MSTCentralManager *)manager didUpdateLocationDate: (NSString *) locationUpdateDate;
+-(void) mistManager:(MSTCentralManager *)manager didUpdateLocationDate: (NSString *) locationUpdateDate;
 
 #pragma mark - Setting Callbacks
 
@@ -612,19 +601,19 @@
  */
 -(void)mistManager:(MSTCentralManager *)manager timedOutRequestsCount: (long) timedOutRequestCount;
 
-#pragma mark location rx / tx 
-- (void) mistManager: (MSTCentralManager *)manager didUpdateTotalRequests:(long)totalRequests andTotalResponses: (long)totalResponses atDate: (NSDate *) date;
+#pragma mark location rx / tx
+-(void) mistManager: (MSTCentralManager *)manager didUpdateTotalRequests:(long)totalRequests andTotalResponses: (long)totalResponses atDate: (NSDate *) date;
 
 #pragma mark location RF Recording
-- (void) mistManager: (MSTCentralManager *)manager onStartRFRecordingResponse:(NSString *)recordingId withIsSuccess:(BOOL)isSuccess andMessage:(NSDictionary *) message;
+-(void) mistManager: (MSTCentralManager *)manager onStartRFRecordingResponse:(NSString *)recordingId withIsSuccess:(BOOL)isSuccess andMessage:(NSDictionary *) message;
 
-- (void) mistManager: (MSTCentralManager *)manager onStopRFRecordingResponse:(BOOL)isSuccess withMessage:(NSDictionary *) message;
+-(void) mistManager: (MSTCentralManager *)manager onStopRFRecordingResponse:(BOOL)isSuccess withMessage:(NSDictionary *) message;
 
-#pragma mark 
-- (void) mistManager:(MSTCentralManager *)manager alert: (NSString *) message;
+#pragma mark
+-(void) mistManager:(MSTCentralManager *)manager alert: (NSString *) message;
 
 #pragma mark Stats
-- (void)mistManager:(MSTCentralManager *)manager didUpdateLatencyStats: (double) deviceLatency andBackendRtt: (double) backendRtt;
-- (void)mistManager:(MSTCentralManager*)manager didUpdateNetworkLatency: (double) networkLatency;
+-(void)mistManager:(MSTCentralManager *)manager didUpdateLatencyStats: (double) deviceLatency andBackendRtt: (double) backendRtt;
+-(void)mistManager:(MSTCentralManager*)manager didUpdateNetworkLatency: (double) networkLatency;
 
 @end

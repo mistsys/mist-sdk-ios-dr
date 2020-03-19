@@ -15,7 +15,6 @@
 
 @property (nonatomic, strong, readonly) NSString *mapName;
 @property (nonatomic, strong, readonly) NSString *mapId;
-@property (nonatomic, strong, readonly) UIImage *mapImage;
 @property (nonatomic, readonly) double mapScale;
 @property (nonatomic, readonly) double ppm;
 @property (nonatomic, readonly) CLLocationCoordinate2D mapOrigin;

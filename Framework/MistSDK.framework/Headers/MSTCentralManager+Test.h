@@ -6,7 +6,6 @@
 //  Copyright © 2017 Mist. All rights reserved.
 //
 
-
 /*
  * All test only and Mist private methods will reside here
  */
@@ -38,11 +37,11 @@
 - (void) setMarkerInformationWithDate:(NSString *)time MarkerX:(int)x AndY:(int)y;
 - (void) setMarkerInformationWithDate:(NSString *)time MarkerX:(int)x AndY:(int)y AndRecordingId:(NSString *)recordingId;
 - (void) setMarkerInformationWithDate:(NSString *)time MarkerX:(int)x AndY:(int)y AndRecordingId:(NSString *)recordingId AndWaypointName:(NSString *)waypointName;
-- (void) setWalkMarkerInformationWithDate:(NSString *)time MarkerX:(int)x AndY:(int)y EndX: (int)endX AndEndY: (int)endY AndComments: (NSString *) walkComment;
+- (void) setWalkMarkerInformationWithDate:(NSString *)time MarkerX:(int)x AndY:(int)y EndX: (int)endX AndEndY: (int)endY AndComments: (NSString *) walkComment __deprecated_msg("unsused");
 - (void) startDataCollection;
 - (void) stopDataCollection;
 - (int) getCollectionCounter;
-- (void) spottedVbeacon;
+//- (void) spottedVbeacon;
 - (void) incrementStaticX;
 - (void) incrementStaticY;
 - (void) decrementStaticX;
