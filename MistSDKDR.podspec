@@ -9,8 +9,8 @@ Mist SDK DR
 DESC
     s.author                = { "Mist Systems" => "sdksupport@mist.com" }
     s.social_media_url      = 'https://twitter.com/mistsystems'
-    s.platform              = :ios, "8.0"
-    s.ios.deployment_target = "8.0"
+    s.platform              = :ios, "11.4"
+    s.ios.deployment_target = "11.4"
     s.source                = { :git => "https://github.com/mistsys/mist-sdk-ios-dr.git", :tag => '1.5.280' }
     s.ios.vendored_frameworks = 'Framework/MistSDK.framework'
     s.frameworks            = "Foundation", "Security", "CFNetwork", "JavaScriptCore", "CoreLocation", "CoreBluetooth", "UIKit", "MapKit", "SystemConfiguration"
