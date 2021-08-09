@@ -374,7 +374,7 @@
 
 -(void) mistManager: (MSTCentralManager *) manager didUpdateLEHeading: (NSDictionary *) leInfo;
 
--(void) mistManager: (MSTCentralManager *) manager didUpdateDRHeading: (NSDictionary *) drInfo;
+-(void) mistManager: (MSTCentralManager *) manager didUpdateDRHeading: (NSNumber *) heading;
 
 #pragma mark - Raw Beacon RSSIs
 -(void) mistManager:(MSTCentralManager *)manager didUpdateBeaconList: (NSArray *) beaconList at: (NSDate *) dateUpdated;
