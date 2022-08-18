@@ -27,7 +27,7 @@ typedef NS_ENUM(NSInteger, MapType) {
 /**
  *  SourceType
  */
-typedef NS_ENUM(NSInteger, SourceType) {
+typedef NS_ENUM(NSInteger, BlueDotSourceType) {
     /**
      *  SourceTypeMIST
      */
@@ -96,6 +96,15 @@ typedef NS_ENUM(NSInteger, ErrorType) {
      *  ErrorTypeNoDataConnection
      */
     ErrorTypeNoDataConnection,
+    /**
+     *  ErrorTypeAuthFailure
+     */
+    ErrorTypeAuthFailure,
+    /**
+     *  ErrorTypeServerOverloaded
+     */
+    ErrorTypeServerOverloaded,
+
 };
 
 /**
@@ -205,5 +214,8 @@ typedef NS_ENUM(NSUInteger, MSTLoggerLogLevel) {
     MST_LOG_OFF,
     MST_LOG_TRACE,
 };
-
+typedef NS_ENUM(NSUInteger, MistBackOffReason) {
+    AuthorizationFailure,
+    ServerOverloaded,
+};
 @end
