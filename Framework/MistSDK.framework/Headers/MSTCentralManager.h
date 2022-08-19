@@ -446,7 +446,7 @@
 // willUpdateLocation
 // INDOOR ONLY: This function is called when we have a location but the actual map details are not yet available. SourceType will always be MIST
 
--(void) mistManager: (MSTCentralManager *) manager willUpdateLocation: (CLLocationCoordinate2D) location inMaps: (NSArray *) maps withSource: (SourceType) locationSource  at: (NSDate *) dateUpdated;
+-(void) mistManager: (MSTCentralManager *) manager willUpdateLocation: (CLLocationCoordinate2D) location inMaps: (NSArray *) maps withSource: (BlueDotSourceType) locationSource  at: (NSDate *) dateUpdated;
 
 // didUpdateRelativeLocation
 // INDOOR and OUTDOOR: This function is called when we have both relative location and the actual map details.
@@ -456,7 +456,7 @@
     MIST Location - This type will be returned when Bluetooth is turned on and beacons have been detected.
  */
 
--(void) mistManager: (MSTCentralManager *) manager didUpdateLocation: (CLLocationCoordinate2D) location inMaps: (NSArray *) maps withSource: (SourceType) locationSource  at: (NSDate *) dateUpdated;
+-(void) mistManager: (MSTCentralManager *) manager didUpdateLocation: (CLLocationCoordinate2D) location inMaps: (NSArray *) maps withSource: (BlueDotSourceType) locationSource  at: (NSDate *) dateUpdated;
 
 //Accuracy of the location callback
 //This function is called only when we have a location (relative or geolocation)
