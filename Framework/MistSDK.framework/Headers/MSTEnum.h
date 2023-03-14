@@ -100,10 +100,16 @@ typedef NS_ENUM(NSInteger, ErrorType) {
      *  ErrorTypeAuthFailure
      */
     ErrorTypeAuthFailure,
+
     /**
      *  ErrorTypeServerOverloaded
      */
     ErrorTypeServerOverloaded,
+    
+    /**
+     *  ErrorTypeSDKNotStarted
+     */
+    ErrorTypeSDKNotStarted,
 
 };
 
@@ -215,7 +221,13 @@ typedef NS_ENUM(NSUInteger, MSTLoggerLogLevel) {
     MST_LOG_TRACE,
 };
 typedef NS_ENUM(NSUInteger, MistBackOffReason) {
-    AuthorizationFailure,
     ServerOverloaded,
+};
+
+typedef NS_ENUM(NSUInteger, MistConnectionClosedWithAuthStatus) {
+    AuthorizationSuccess,
+    AuthorizationFailure,
+    AuthorizationUnknown,
+    
 };
 @end

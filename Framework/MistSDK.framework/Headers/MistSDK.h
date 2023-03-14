@@ -39,3 +39,11 @@ FOUNDATION_EXPORT const unsigned char MistSDKVersionString[];
 
 #import <MistSDK/MSTCentralManager+Analytics.h>
 #import <MistSDK/MSTCentralManager+Test.h>
+
+#import <MistSDK/IndoorLocationManager.h>
+#import <MistSDK/MistVirtualBeacon.h>
+#import <MistSDK/MistZone.h>
+#import <MistSDK/Position.h>
+#import <MistSDK/Node.h>
+#import <MistSDK/MistMap.h>
+#import <MistSDK/MistPoint.h>

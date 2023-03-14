@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "MSTClient.h"
-
+__attribute__((deprecated("Don't use this")))
 @interface MSTZone : NSObject
 
 @property (nonatomic, strong, readonly) NSString *zoneId;

@@ -8,13 +8,14 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "MSTMap.h"
 
 typedef NS_ENUM(NSInteger, MSTPointType) {
     MSTPointTypeLE,
     MSTPointTypeDR,
     MSTPointTypeLast,
 };
-
+__attribute__((deprecated("use MistPoint instead")))
 @interface MSTPoint : NSObject
 
 @property (nonatomic) double x;
@@ -50,6 +51,8 @@ typedef NS_ENUM(NSInteger, MSTPointType) {
 @property (nonatomic, strong) NSNumber *sLon;
 @property (nonatomic, strong) NSNumber *sMapID;
 @property (nonatomic, strong) NSNumber *sTime;
+
+@property (nonatomic, strong) MSTMap *map;
 
 @property (nonatomic) MSTPointType pointType;
 

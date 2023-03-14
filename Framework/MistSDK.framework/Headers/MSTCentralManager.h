@@ -2,8 +2,7 @@
 //  MSCentralManager.h
 //  MistLocation
 //
-//  Created by Nirmala Jayaraman on 1/23/15.
-//  Copyright (c) 2015 Mist Systems Inc. All rights reserved.
+//  Copyright (c) 2015 Juniper Networks All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -20,11 +19,13 @@
 #import "MSTBeaconRegion.h"
 #import "MSTBeacon.h"
 #import "MSTEnum.h"
-
+#import "Position.h"
+#import "IndoorLocationManager.h"
 #import "MSTCentralManagerMapDataSource.h"
 
 @protocol MSTCentralManagerDelegate;
 @protocol MSTProximityDelegate;
+@protocol ClientInformationDelegate;
 
 /**
  *  The Mist Manager is the manager of all the other managers. It offers the ability to connect to the Mist Cloud, start the desired services, stop and terminate connection.
@@ -44,10 +45,12 @@
  *  Subscribe to the MSTCentralManagerDelegate to be notified of Mist Location updates, and to get debug messages
  *
  */
+__attribute__((deprecated("use IndoorLocationManager instead")))
 @interface MSTCentralManager : NSObject
 
 @property (nonatomic, weak) id<MSTCentralManagerDelegate> delegate;
 @property (nonatomic, weak) id<MSTProximityDelegate> proximityDelegate;
+@property (nonatomic, weak) id<ClientInformationDelegate> clientInformationDelegate;
 @property (nonatomic, weak) id<MSTCentralManagerMapDataSource> mapDataSource;
 
 @property (nonatomic) NSUInteger smoothingNumber;
@@ -112,6 +115,7 @@
  */
 -(id) initWithOrgID: (NSString *) orgId AndOrgSecret: (NSString *) orgSecret;
 
+- (void) setEnviroment:(NSString *)envType;
 /**
  * Turn on or off compass
  * @param compassStatus on / off
@@ -213,6 +217,7 @@
 
 -(void)saveClientInformation:(NSMutableDictionary *)clientInformation;
 
+-(void)saveClientInformation:(NSString *)clientName withDelegate:(id<ClientInformationDelegate>)clientInformationDelegate;
 #pragma mark -- DR in Path
 
 // TODO: move to a category once DR is well tested.
@@ -348,8 +353,15 @@
 
 -(void)setSendDRInternalsAlways:(BOOL)sendDRInternalsAlways;
 -(BOOL) getSendDRInternalsAlways;
-@end
 
+/**
+ * Wayfinding
+ */
+#pragma mark - Wayfinding
+-(NSArray*) getWayfindingPathTo:(Position*) destination;
+
+@end
+__attribute__((deprecated("use IndoorLocationManager#IndoorLocationDelegate instead")))
 @protocol MSTCentralManagerDelegate <NSObject>
 
 #pragma mark - Old APIs
@@ -589,7 +601,7 @@
 
 -(void)mistManager:(MSTCentralManager *)manager :(NSString *)message __deprecated;
 
-#pragma mark data in/out for Bob
+#pragma mark data in/out
 
 -(void)mistManager:(MSTCentralManager *)manager requestOutTimeInt:(NSTimeInterval)interval;
 -(void)mistManager:(MSTCentralManager *)manager requestInTimeInts:(NSArray *)timeInts;

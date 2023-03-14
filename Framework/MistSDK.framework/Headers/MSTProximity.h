@@ -25,6 +25,7 @@ extern NSString *const kMSTProximityRemote;
  * Independent: By providing the list of virtual beacons, you can range for the beacons by calling startProximityWithLocation.
  * via Mist SDK: By calling MSTCentralManager's startVirtualBeaconProximity and by becoming a delegate of MSTProximityDelegate.
  */
+__attribute__((deprecated("Don't use this")))
 @interface MSTProximity : NSObject
 
 @property (nonatomic, readonly) NSArray *beacons;

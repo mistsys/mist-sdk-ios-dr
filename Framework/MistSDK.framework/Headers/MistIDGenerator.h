@@ -14,7 +14,7 @@ Methods:
  */
 
 #import <Foundation/Foundation.h>
-
+__attribute__((deprecated("use IndoorLocationManager instead")))
 @interface MistIDGenerator : NSObject
 
 /*!

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
-
+__attribute__((deprecated("Don't use this")))
 @interface MSTBeacon : NSObject
 
 //The proximity ID of the beacon

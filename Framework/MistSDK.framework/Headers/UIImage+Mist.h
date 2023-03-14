@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+__attribute__((deprecated("Don't use this")))
 @interface UIImage (Mist)
 
 @property (nonatomic,readonly) double ratio;
