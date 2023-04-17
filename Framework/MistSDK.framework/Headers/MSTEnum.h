@@ -105,6 +105,11 @@ typedef NS_ENUM(NSInteger, ErrorType) {
      *  ErrorTypeServerOverloaded
      */
     ErrorTypeServerOverloaded,
+    
+    /**
+     *  ErrorTypeSDKNotStarted
+     */
+    ErrorTypeSDKNotStarted,
 
 };
 

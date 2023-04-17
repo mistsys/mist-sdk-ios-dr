@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+__attribute__((deprecated("Don't use this")))
 @interface MSTRestAPI : NSObject
 
 @property (nonatomic, readonly) bool isLoggedIn;

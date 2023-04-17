@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+__attribute__((deprecated("Don't use this")))
 @interface MSTBeaconRegion : NSObject <NSCopying>
 
 #pragma mark - READ ONLY PROPERTIES

@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+__attribute__((deprecated("Don't use this")))
 @interface UIColor (Mist)
 
 +(instancetype)colorWithHexString:(NSString *)hexString;

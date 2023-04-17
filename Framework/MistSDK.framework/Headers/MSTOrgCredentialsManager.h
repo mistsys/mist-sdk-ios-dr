@@ -14,7 +14,7 @@
  *  A helper method to retrieve the org credential
  */
 static NSString *orgId;
-
+__attribute__((deprecated("use IndoorLocationManager instead")))
 @interface MSTOrgCredentialsManager : NSObject
 
 @property (nonatomic, weak) id<MSTOrgCredentialsManagerDelegate> delegate;

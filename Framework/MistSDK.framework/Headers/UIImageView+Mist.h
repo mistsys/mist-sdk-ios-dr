@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+__attribute__((deprecated("Don't use this")))
 @interface UIImageView (Mist)
 
 //-(void)pinAtRelativeLocation:(CGPoint)point atScaleFactor:(double)scaleFactor;

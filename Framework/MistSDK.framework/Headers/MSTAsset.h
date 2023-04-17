@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "MSTZone.h"
-
+__attribute__((deprecated("Don't use this")))
 @interface MSTAsset : NSObject
 
 @property (nonatomic, strong, readonly) NSString *assetName;

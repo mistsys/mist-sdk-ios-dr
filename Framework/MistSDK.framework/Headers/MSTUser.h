@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+__attribute__((deprecated("Don't use this")))
 @interface MSTUser : NSObject
 
 @property (nonatomic, strong, readonly) NSString *userName;

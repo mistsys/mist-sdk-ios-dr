@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "MSTUser.h"
 #import "MSTZone.h"
-
+__attribute__((deprecated("Don't use this")))
 @interface MSTClient : NSObject
 
 @property (nonatomic, strong, readonly) NSUUID *clientUUID;

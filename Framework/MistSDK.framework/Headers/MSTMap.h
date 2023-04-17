@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 #import "MSTEnum.h"
-
+__attribute__((deprecated("use MistMap instead")))
 @interface MSTMap : NSObject <NSCopying>
 
 @property (nonatomic, strong, readonly) NSString *mapName;
